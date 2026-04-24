@@ -3,7 +3,10 @@ import yfinance as yf
 import joblib
 import numpy as np
 import os
-from keras.models import load_model
+try:
+    from keras.models import load_model
+except:
+    load_model = None
 import plotly.graph_objects as go
 import warnings
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
@@ -44,7 +47,10 @@ def load_components(symbol):
     if not os.path.exists(model_path):
         return None, None
 
-    model = load_model(model_path)
+    if load_model is None:
+        model = None
+    else:
+        model = load_model(f"models/lstm/{symbol}_model.h5")
     scaler = joblib.load(scaler_path)
     return model, scaler
 
@@ -93,7 +99,13 @@ if len(data) < 60:
 window = data[-60:]
 current_price = float(data[-1][0])
 
-model_output = predict_from_array(model, scaler, window)
+if model is None:
+    model_output = {
+        "predicted_price": current_price,
+        "change_percent": 0
+    }
+else:
+    model_output = predict_from_array(model, scaler, window)
 
 # -------------------------------
 # News
