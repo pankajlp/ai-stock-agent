@@ -32,7 +32,7 @@ def predict(symbol="RELIANCE.NS"):
 
         x_test = np.reshape(scaled, (1, 60, 1))
 
-        pred = model.predict(x_test)
+        pred = model.predict(x_test,verbose=0)
 
         if np.isnan(pred).any():
             raise ValueError("Model returned NaN")

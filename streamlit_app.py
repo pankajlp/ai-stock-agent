@@ -5,10 +5,12 @@ import numpy as np
 import os
 from keras.models import load_model
 import plotly.graph_objects as go
-
+import warnings
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+warnings.filterwarnings("ignore")
 # Fix imports
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+#import sys
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from models.lstm.predict import predict_from_array
 from services.news_service import get_news
@@ -69,7 +71,7 @@ trade_log = st.session_state.trade_log
 # -------------------------------
 @st.cache_data(ttl=30)
 def get_data(symbol):
-    return yf.download(symbol, period="5d", interval="5m")
+    return yf.download(symbol, period="5d", interval="5m", auto_adjust=False)
 
 df = get_data(symbol)
 
@@ -254,7 +256,7 @@ for s in symbols:
         continue
 
     window_multi = df_multi[['Close']].values[-60:]
-    price_multi = float(df_multi['Close'].iloc[-1])
+    price_multi = float(df_multi['Close'].values[-1])
 
     model_out = predict_from_array(m, sc, window_multi)
 
