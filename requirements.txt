@@ -1,11 +1,10 @@
-
 streamlit
 yfinance
 numpy
 pandas
 plotly
 joblib
-tensorflow
-keras
 python-dotenv
 groq
+tensorflow-cpu==2.13.0
+h5py
